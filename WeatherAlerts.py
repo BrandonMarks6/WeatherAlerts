@@ -11,9 +11,11 @@ requests will have to be downloaded to the device to run this program successful
 
 #line below can be added to convert sunset and sunrise times from api if wanted
 #import datetime as dt
+import time
 import requests#for api implemntaion
 import smtplib#related to email/text implementation
 from email.message import EmailMessage#related to email/text implementation
+import schedule #to make it run each day
 
 emailBody =""#will be filled with information from the api
 API_KEY = "0ae323251b31d61c5d6d2215ce3ffc88"
@@ -63,6 +65,7 @@ def emailSend(to, body, subject):
     send["subject"] = subject
     send["to"] = to
 
+    #login variables
     user = "bmarksPythonAlerts@gmail.com"
     send['from'] = user
     password = "uczfndboxpxbwjjy"#is a specific app password seperate from gmail password
@@ -74,6 +77,17 @@ def emailSend(to, body, subject):
     server.send_message(send)
     server.quit()
 
-if __name__ == "__main__":
+
+def sendIt():
     emailSend("8645204581@vtext.com", emailBody, "Weather Report")#phone number or email can be substituted
-    print("Email sent")#confirms function has been run
+    print("Report sent")#confirms function has been run
+    return
+
+
+if __name__ == "__main__":
+    schedule.every().day.at("07:30").do(sendIt)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(10)
+
